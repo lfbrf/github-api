@@ -20,21 +20,40 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.gitapi.github.api.Http;
 import com.gitapi.github.entities.Github;
+import com.gitapi.github.entities.GithubApi;
+import com.gitapi.github.services.GithubService;
 
 
 
 @Controller
 public class GitController {
 
-    
+	private GithubService githubService;
 
-    /**
+    
+    public GithubService getGithubService() {
+		return githubService;
+	}
+
+
+
+
+    @Autowired
+	public void setGithubService(GithubService githubService) {
+		this.githubService = githubService;
+	}
+
+
+
+
+
+	/**
      * List all git repos.
      *
      * @param model
      * @return
      */
-    @RequestMapping(value = "/listagem", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/search", "/save"}, method = RequestMethod.GET)
     public String list(Model model) {
   
         System.out.println("Returning rpoducts:");
@@ -45,8 +64,8 @@ public class GitController {
 
     
    
- public List<Github> setGithubRepos(String query, JSONObject object) {
-	 List<Github> github = new ArrayList<Github>();	
+ public List<GithubApi> setGithubRepos(String query, JSONObject object) {
+	 List<GithubApi> github = new ArrayList<GithubApi>();	
 	 try {
 			
 			object = chamadaHttp(query, "java", true);
@@ -58,7 +77,7 @@ public class GitController {
 	        System.out.println(urls);
 	         
 	        for (int i = 0; i < jArray.length(); i++) {
-	        	Github g = new Github();
+	        	GithubApi g = new GithubApi();
 	        	  JSONObject row = jArray.getJSONObject(i);
 	        	  JSONObject owner = (JSONObject) row.get("owner");
 	        	
@@ -146,7 +165,25 @@ public class GitController {
 		
         return modelAndView;
     }
+    
+    
+    
    
+    @RequestMapping("/save")
+    public ModelAndView save(@RequestParam int idSalvar) {
+    	System.out.println("Iniciio");
+        System.out.println("AQUI!!" + idSalvar);
+        Github github = new Github();
+        github.setIdGithub(idSalvar);
+        githubService.saveGithub(github);
+      
+        ModelAndView modelAndView = new ModelAndView("repos");
+        modelAndView.addObject("message", "Baeldung");
+        JSONObject object = null;
+        
+		
+        return modelAndView;
+    }
     
    
 
@@ -162,25 +199,7 @@ public class GitController {
     private static JSONObject chamadaHttp(String busca, String linguagem, boolean ordem) throws IOException {
         Http http = new Http();
         String retornoJson = (http.chamaUrl(busca, linguagem, ordem) + " ]}");
-        JSONObject objetoJson = new JSONObject(retornoJson);
-        //JSONArray jArray = objetoJson.getJSONArray("");
-        //JSONArray jsonarray = (JSONArray)retornoJson;
-        
-        //JSONArray arrFilmes = objetoJson.getJSONArray();
-        
-        //JSONArray arr = objetoJson.getJSONArray("id");
-        
-        //List<String> z = getValuesForGivenKey(retornoJson,"url");
-       
-        
-        
-        /*
-        for (int i=0; i < objetoJson.length(); i++) {
-        	 
-        	 System.out.println("urls: " + objetoJson.getString("url"));
-        }*/
-        
-        
+        JSONObject objetoJson = new JSONObject(retornoJson);  
         return objetoJson;
     }
 
