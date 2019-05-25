@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Spring Boot Exemple</title>
+
+<!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+	<div class="container">
+		<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+		<form class="form-horizontal" th:action="@{/search}" method="post">
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Product Id:</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" th:value="*{query}"
+						name="query" />
+				</div>
+			</div>
+
+			<div class="row">
+				<button type="submit" class="btn btn-default">Submit</button>
+			</div>
+		</form>
+
+
+
+
+
+
+		<div th:if="${not #lists.isEmpty(repos)}">
+			<h2>Listagem de Repositórios</h2>
+
+			<table class="table table-striped" id="tableRepos">
+				<tr>
+					<th>Id</th>
+					<th>URL Repo</th>
+					<th>Nome</th>
+					<th>Caminho Completo</th>
+					<th>Descrição Detalhada</th>
+					<th>Branch Padrão</th>
+					<th>Linguagens</th>
+					<th>Forks</th>
+					<th>Expandir</th>
+					<th>Salvar</th>
+
+			
+				</tr>
+				<div th:each="repo : ${repos}">
+
+					<tr class="lista_repos">
+						<td th:text="${repo.id}" ></td>
+						<td><a th:href="${repo.url}">Repo</a></td>
+						<td th:text="${repo.Name}"></td>
+						<td th:text="${repo.fullName}"></td>
+						<td th:text="${repo.description}"></td>
+						<td th:text="${repo.defaultBranch}"></td>
+						<td th:text="${repo.language}"></td>
+						<td th:text="${repo.forks}"></td>
+						<td class="rp">
+							<img alt="" src="http://chittagongit.com/images/collapse-expand-icon/collapse-expand-icon-13.jpg" height="30px"  width="30px" />
+						</td>
+						<td class="sv">
+							<img alt="" src="https://cdn2.iconfinder.com/data/icons/apple-classic/100/Apple_classic_10Icon_5px_grid-04-512.png" height="30px"  width="30px" />
+						</td>
+					</tr>
+					<tr class="showhide">
+					<td colspan="8">
+					<ul class="infosUser">
+					<li style="display:inline-block; float:left;">
+						
+						
+						<ul>
+					    <li > <span style="font-weight: bold;">Fork: </span>   <span th:text="${repo.fork}" ></span> </li>
+					    <li > <span style="font-weight: bold;">Criado em: </span>   <span th:text="${repo.createdAt}" ></span> </li>
+					    <li > <span style="font-weight: bold;">Push em: </span>   <span th:text="${repo.pushedAt}" ></span> </li>
+					    <li > <span style="font-weight: bold;">URL git: </span>   <a th:href="${repo.gitUrl}">GIT</a></li>
+					    <li > <span style="font-weight: bold;">SSH: </span>   <span th:text="${repo.sshUrl}" ></span> </li>
+					    <li > <span style="font-weight: bold;">URL Clone: </span>   <span th:text="${repo.cloneUrl}" ></span> </li>
+					    <li > <span style="font-weight: bold;">Tamanho: </span>   <span th:text="${repo.size}" ></span> </li>
+					    <li > <span style="font-weight: bold;">Contador Vizualizações: </span>   <span th:text="${repo.watchersCount}" ></span> </li>
+					    <li > <span style="font-weight: bold;">Issues Abertas: </span>   <span th:text="${repo.openIssues}" ></span> </li>
+					    <li > <span style="font-weight: bold;">Observadores: </span>   <span th:text="${repo.watchers}" ></span> </li>
+					    <li > <span style="font-weight: bold;">Score: </span>   <span th:text="${repo.score}" ></span> </li>
+						
+					    
+					    <li > <span style="font-weight: bold;">Login: </span>   <span th:text="${repo.login}" ></span> </li>
+						<li > <span style="font-weight: bold;">ID de Usuário: </span>   <span th:text="${repo.ownerId}" ></span> </li>
+						<li > <span style="font-weight: bold;">URL do Usuário: </span>   <span th:text="${repo.avatarUrl}" ></span> </li>
+						<li > <span style="font-weight: bold;">Tipo: </span>   <span th:text="${repo.type}" ></span> </li>
+					   </ul>
+						
+						
+					</li>
+					<li style="display:inline; float: left;"> 
+					<img alt="" th:src="${repo.avatarUrl}"  height="100%" />
+					</li>
+					</ul>
+					
+					   </td>
+						
+					</tr>
+					
+				</div>
+			</table>
+
+		</div>
+
+
+	</div>
+
+
+
+</body>
+<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+	
+	$(function() {
+		$('tr.lista_repos td.rp').click(function() {
+			$(this).nextUntil('showhide').slideToggle(100);
+			
+			$(this).parent()
+            .next('tr.showhide')
+             .slideToggle(100);	
+	  });
+		
+		
+}); 
+	</script>
+
+<style>
+tr.showhide, tr.showhide2{
+	display: none
+}
+
+.infosUser li {
+list-style-type: none;
+ 
+}
+
+.rp, .sv{
+cursor: pointer;
+}
+
+</style>
+</html>
