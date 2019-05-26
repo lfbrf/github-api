@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
 
-<title>Spring Boot Exemple</title>
+<title>Repositórios Github</title>
 
 <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
 </head>
@@ -13,16 +13,40 @@
 		<form class="form-horizontal" th:action="@{/search}" method="post">
 
 			<div class="form-group">
-				<label class="col-sm-2 control-label">Product Id:</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" th:value="*{query}"
-						name="query" />
+				<div class="form-group">
+					<div class="col-sm-1">
+						<label style="">Linguagem</label>
+					</div>
+					<div class="col-sm-10">
+						<select class="selectpicker form-control" id="selectLinguagens"
+							name="language">
+							<option selected="selected">Todas</option>
+							<option value="Java">Java</option>
+							<option>Ruby</option>
+							<option>Php</option>
+							<option>C#</option>
+							<option>Python</option>
+						</select>
+					</div>
 				</div>
+				<div class="col-sm-11">
+					<input type="text" class="form-control" th:value="*{query}"
+						name="query" id="query" />
+				</div>
+				<div class="col-sm-1">
+					<input id="url" name="url" style="display: none;" /> <input
+						type="image" onclick=" enviarBusca(); return false;" height="35px" width="35px"
+						src="https://www.sccpre.cat/mypng/full/44-449348_icons-transparent-magnifying-glass-magnifying-glass-icon-transparent.png" />
+				</div>
+				<button type="submit" id="btBuscarApi" class="btn btn-default"
+					style="display: none;">Submit</button>
 			</div>
 
-			<div class="row">
-				<button type="submit" class="btn btn-default">Submit</button>
-			</div>
+
+
+
+
+
 		</form>
 
 
@@ -33,85 +57,114 @@
 		<div th:if="${not #lists.isEmpty(repos)}">
 			<h2>Listagem de Repositórios</h2>
 
-			<table class="table table-striped" id="tableRepos">
+			<table class="table table-striped" id="tableRepos"
+				style="table-layout: fixed; width: 100%">
 				<tr>
 					<th>Id</th>
 					<th>URL Repo</th>
 					<th>Nome</th>
 					<th>Caminho Completo</th>
-					<th>Descrição Detalhada</th>
 					<th>Branch Padrão</th>
-					<th>Linguagens</th>
+					<th>Linguagem</th>
 					<th>Forks</th>
 					<th>Expandir</th>
-					<th>Salvar</th>
+					<th>Ação</th>
 
-			
+
 				</tr>
 				<div th:each="repo : ${repos}">
 
 					<tr class="lista_repos">
-					
+
+
+						<td th:text="${repo.id}" style="word-wrap: break-word"></td>
+						<td><a th:href="${repo.url}" style="word-wrap: break-word">Repo</a></td>
+						<td th:text="${repo.Name}" style="word-wrap: break-word"></td>
+						<td th:text="${repo.fullName}" style="word-wrap: break-word"></td>
+
+
+
+
+						<td th:text="${repo.defaultBranch}" style="word-wrap: break-word"></td>
+						<td th:text="${repo.language}" style="word-wrap: break-word"></td>
+						<td th:text="${repo.forks}" style="word-wrap: break-word"></td>
+						<td class="rp"><img alt="" class="sv" 
+							src="https://cdn2.iconfinder.com/data/icons/arrows-part-1/32/tiny-arrows-vertical-in-1-512.png"
+							height="30px" width="30px" /></td>
 						
-						<td th:text="${repo.id}" >
 						
-						</td>
-						<td><a th:href="${repo.url}">Repo</a></td>
-						<td th:text="${repo.Name}"></td>
-						<td th:text="${repo.fullName}"></td>
-						<td th:text="${repo.description}"></td>
-						<td th:text="${repo.defaultBranch}"></td>
-						<td th:text="${repo.language}"></td>
-						<td th:text="${repo.forks}"></td>
-						<td class="rp">
-							<img alt="" src="http://chittagongit.com/images/collapse-expand-icon/collapse-expand-icon-13.jpg" height="30px"  width="30px" />
-						</td>
-						<td class="sv">
-							<img alt=""  th:onclick="'javascript:sendSave(' + ${repo.id} + ');'"       src="https://cdn2.iconfinder.com/data/icons/apple-classic/100/Apple_classic_10Icon_5px_grid-04-512.png" height="30px"  width="30px" />
+						<td  ><img alt="" class="sv" th:if="${githubService.checkPersistRepo(repo.id) == false}"
+							th:onclick="'javascript:sendSave(' + ${repo.id} + ');'"
+							src="https://cdn2.iconfinder.com/data/icons/apple-classic/100/Apple_classic_10Icon_5px_grid-04-512.png"
+							height="30px" width="30px" /></td>
+
+ 
+
+
+					</tr>
+					<tr class="showhide">
+						<td colspan="8">
+							<ul class="infosUser">
+								<li style="display: inline; float: left;"><img alt=""
+									th:src="${repo.avatarUrl}" height="370px;" /></li>
+								<li style="display: inline-block; float: right;">
+
+
+									<ul>
+										<li><span style="font-weight: bold;">Login: </span> <span
+											th:text="${repo.login}"></span></li>
+										<li><span style="font-weight: bold;">Fork: </span> <span
+											th:text="${repo.fork}"></span></li>
+										<li><span style="font-weight: bold;">Criado em: </span> <span
+											th:text="${repo.createdAt}"></span></li>
+										<li><span style="font-weight: bold;">Push em: </span> <span
+											th:text="${repo.pushedAt}"></span></li>
+										<li><span style="font-weight: bold;">URL git: </span> <a
+											th:href="${repo.gitUrl}">GIT</a></li>
+										<li><span style="font-weight: bold;">SSH: </span> <span
+											th:text="${repo.sshUrl}"></span></li>
+										<li><span style="font-weight: bold;">URL Clone: </span> <a
+											th:href="${repo.cloneUrl}">Clone</a></li>
+										<li><span style="font-weight: bold;">Tamanho: </span> <span
+											th:text="${repo.size}"></span></li>
+										<li><span style="font-weight: bold;">Contador
+												Vizualizações: </span> <span th:text="${repo.watchersCount}"></span>
+										</li>
+										<li><span style="font-weight: bold;">Issues
+												Abertas: </span> <span th:text="${repo.openIssues}"></span></li>
+										<li><span style="font-weight: bold;">Observadores:
+										</span> <span th:text="${repo.watchers}"></span></li>
+										<li><span style="font-weight: bold;">Score: </span> <span
+											th:text="${repo.score}"></span></li>
+
+
+
+										<li><span style="font-weight: bold;">ID de
+												Usuário: </span> <span th:text="${repo.ownerId}"></span></li>
+										<li><span style="font-weight: bold;">Tipo: </span> <span
+											th:text="${repo.type}"></span></li>
+
+										
+									</ul>
+									
+
+								</li>
+								<li>
+								
+								</li>
+
+							</ul>
 							
 						</td>
 						
-				
-			
-						
 					</tr>
-					<tr class="showhide">
-					<td colspan="8">
-					<ul class="infosUser">
-					<li style="display:inline; float: left;"> 
-					<img alt="" th:src="${repo.avatarUrl}"  height="270px;" />
-					</li>
-					<li style="display:inline-block; float:right;">
-						
-						
-						<ul>
-					    <li > <span style="font-weight: bold;">Fork: </span>   <span th:text="${repo.fork}" ></span> </li>
-					    <li > <span style="font-weight: bold;">Criado em: </span>   <span th:text="${repo.createdAt}" ></span> </li>
-					    <li > <span style="font-weight: bold;">Push em: </span>   <span th:text="${repo.pushedAt}" ></span> </li>
-					    <li > <span style="font-weight: bold;">URL git: </span>   <a th:href="${repo.gitUrl}">GIT</a></li>
-					    <li > <span style="font-weight: bold;">SSH: </span>   <span th:text="${repo.sshUrl}" ></span> </li>
-					    <li > <span style="font-weight: bold;">URL Clone: </span>     <a th:href="${repo.cloneUrl}">Clone</a>  </li>
-					    <li > <span style="font-weight: bold;">Tamanho: </span>   <span th:text="${repo.size}" ></span> </li>
-					    <li > <span style="font-weight: bold;">Contador Vizualizações: </span>   <span th:text="${repo.watchersCount}" ></span> </li>
-					    <li > <span style="font-weight: bold;">Issues Abertas: </span>   <span th:text="${repo.openIssues}" ></span> </li>
-					    <li > <span style="font-weight: bold;">Observadores: </span>   <span th:text="${repo.watchers}" ></span> </li>
-					    <li > <span style="font-weight: bold;">Score: </span>   <span th:text="${repo.score}" ></span> </li>
-						
-					    
-					    <li > <span style="font-weight: bold;">Login: </span>   <span th:text="${repo.login}" ></span> </li>
-						<li > <span style="font-weight: bold;">ID de Usuário: </span>   <span th:text="${repo.ownerId}" ></span> </li>
-						<li > <span style="font-weight: bold;">Tipo: </span>   <span th:text="${repo.type}" ></span> </li>
-					   </ul>
-						
-						
-					</li>
-					
-					</ul>
-					
-					   </td>
-						
+					<tr class="showhide2">
+					<td colspan="8" style="word-wrap: break-word;">
+					<span style="font-weight: bold; "  >Descrição: </span> <span
+											th:text="${repo.description}"></span>
+					</td>
 					</tr>
-					
+
 				</div>
 			</table>
 
@@ -119,46 +172,36 @@
 
 
 	</div>
-<form th:action="@{/save}" method="post" style="display:none;">		
-<input  name="idSalvar" id="idSalvar"  ></input>	
-<button style="display: none;" type="submit" id="saveRepo" class="btn btn-default">Enviar</button>
-</form>
+	<form th:action="@{/save}" method="post" style="display: none;">
+		<input name="idSalvar" id="idSalvar"></input>
+		<button style="display: none;" type="submit" id="saveRepo"
+			class="btn btn-default">Enviar</button>
+	</form>
 
 
 </body>
 <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
-<script type="text/javascript">
-	function sendSave(id){
-		alert(id);
-		$("#idSalvar").val(id);
-		$('#saveRepo').trigger('click');
-	} 
-	$(function() {
-		$('tr.lista_repos td.rp').click(function() {
-			$(this).nextUntil('showhide').slideToggle(100);
-			
-			$(this).parent()
-            .next('tr.showhide')
-             .slideToggle(100);	
-	  });
-		
-		
-}); 
-	</script>
+<script
+	src="//rawgithub.com/indrimuska/jquery-editable-select/master/dist/jquery-editable-select.min.js"></script>
+<link
+	href="//rawgithub.com/indrimuska/jquery-editable-select/master/dist/jquery-editable-select.min.css"
+	rel="stylesheet" />
+
+<script type="text/javascript" src="../js/main.js"></script>
+
 
 <style>
-tr.showhide, tr.showhide2{
+
+tr.showhide, tr.showhide2 {
 	display: none
 }
 
 .infosUser li {
-list-style-type: none;
- 
+	list-style-type: none;
 }
 
-.rp, .sv{
-cursor: pointer;
+.sv {
+	cursor: pointer;
 }
-
 </style>
 </html>

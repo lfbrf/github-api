@@ -20,4 +20,30 @@ public class GithubServiceImpl implements GithubService {
 	    public Github saveGithub(Github github) {
 	        return githubRepository.save(github);
 	    }
+
+
+
+	@Override
+	public Iterable<Github> listallRepos() {
+		 return githubRepository.findAll();
+	}
+
+
+
+	@Override
+	public boolean checkPersistRepo(int id) {
+
+		Github github = githubRepository.findBySearchTerm(id);
+		if (github!=null && github.getId()>-1)
+			return true;
+		return false;
+	}
+
+
+
+
+
+
+
+	
 }
