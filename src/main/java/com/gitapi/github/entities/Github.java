@@ -1,11 +1,13 @@
 package com.gitapi.github.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+
 public class Github {
 
 	@Id
@@ -20,6 +22,7 @@ public class Github {
 		this.id = id;
 	}
 	
+	@Column(unique=true, nullable=false) 
 	private int idGithub;
 
 	public int getIdGithub() {

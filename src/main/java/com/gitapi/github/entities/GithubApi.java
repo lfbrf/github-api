@@ -1,8 +1,4 @@
 package com.gitapi.github.entities;
-
-
-
-
 public class GithubApi {
 	public String getName() {
 		return name;

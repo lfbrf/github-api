@@ -11,3 +11,4 @@ public interface GithubService {
 	 void deleteRepo(Integer id);
 	 boolean listarBanco();
 }
+ 
