@@ -72,33 +72,49 @@ public class GitController {
 
 
 	@RequestMapping(value = {"/listarbanco"}, method = RequestMethod.GET)
-	public ModelAndView listArBanco(Model model,  @RequestParam(value="query", required = false) String query, @RequestParam(value="language", required = false)  String language ) {
+	public ModelAndView listArBanco(Model model,  @RequestParam(value="query", required = false) String query, @RequestParam(value="language", required = false)  String language,
+			@RequestParam(value="retorno", required = false) String retorno) {
 		ModelAndView modelAndView = new ModelAndView("repos");
+		if (retorno!=null) {
+			String message = "";
+			if (retorno.equals("1") || retorno == "1")
+				message = "Repositório salvo com sucesso!";
+			else if (retorno.equals("-1") || retorno == "-1")
+				message = "Não foi possível salvar o repositório, favor entrar em contato com o administrador";
+			else if (retorno.equals("0") || retorno == "0")
+				message = "Não foi possível salvar o repositório, ja existe um registro salvo para o mesmo!";
+
+			else if (retorno.equals("10") || retorno == "10")
+				message = "Repositório deletado com sucesso";
+			else if (retorno.equals("20") || retorno == "20")
+				message = "Não foi possível deletar o repositório, favor entrar em contato com o administrador";
+
+			modelAndView.addObject("retornoSave", message);
+			//modelAndView.setViewName("redirect:listarbanco");
+		}
 		//List<GithubApi> gitsAllrepos = new ArrayList<GithubApi>();
 		modelAndView.addObject("githubService", githubService);
 		List<GithubApi> todos = new ArrayList<GithubApi>();
 		System.out.println("listArBanco listArBanco listArBanco");
 		if (query!= null && query!="" && !query.equals("")) {
 			todos = listAllSaved(query, language);
-
 		}
 
 		else {
-			System.out.println("ELSEEEEEEEEEEEEEEEE");
 			Iterable<Github> z = githubService.listallRepos();
 			if (z!=null) 
 				for(Github s: z){
 					String st = s.getIdGithub() + "";
 					List<GithubApi> m = setGithubRepos(st, "", true);
 					System.out.println("UP UP");
-					if (m!=null && !m.isEmpty()) {
+					if (m!=null && !(m.isEmpty())) {
 						System.out.println("AQUI S");
 						todos.add(m.get(0));
 					}
 						
 				}
 		}
-		if (todos!=null && !todos.isEmpty())
+		if (todos!=null && !(todos.isEmpty()))
 			modelAndView.addObject("repos", todos);
 		return modelAndView;
 	}
@@ -236,7 +252,9 @@ public class GitController {
 		modelAndView.addObject("language", language);
 		System.out.println("Minha URL!!!!!");
 		System.out.println(url);
-		if (url.startsWith("http://localhost:8080/listarbanco")) {
+		if (url.startsWith("http://localhost:8080/listarbanco")||
+				url.startsWith("https://localhost:8080/listarbanco")||
+				url.startsWith("localhost:8080/listarbanco")) {
 			//githubService.searchById(query);
 			System.out.println("ATE AQI");
 			modelAndView.setViewName("redirect:listarbanco");
@@ -244,14 +262,6 @@ public class GitController {
 			try
 			{
 				List<GithubApi> gitsAllrepos = new ArrayList<GithubApi>();
-
-				//gitsAllrepos = listAllSaved(query, language);
-
-				//System.out.println("APOS RETORNO");
-
-
-				//modelAndView.addObject("repos", gitsAllrepos);
-
 
 			}
 
@@ -276,16 +286,43 @@ public class GitController {
 	public ModelAndView save(@RequestParam int idSalvar) {
 		Github github = new Github(); 
 		github.setIdGithub(idSalvar);
-		githubService.saveGithub(github);
-
+		String message = "";
 		ModelAndView modelAndView = new ModelAndView("repos");
 		modelAndView.addObject("githubService", githubService);
-		modelAndView.setViewName("redirect:/listarbanco");
+		if (githubService.checkPersistRepo(idSalvar)) {
+			modelAndView.setViewName("redirect:/listarbanco?retorno=0");
+			return modelAndView;
+		}
+		Github p = githubService.saveGithub(github);
+		if (p!=null)
+			message = "1";
+		else
+			message = "-1";
+		
+		modelAndView.setViewName("redirect:/listarbanco?retorno=" + message);
 		return modelAndView;
 	}
 
-
-
+	
+	@RequestMapping("/delete")
+	public ModelAndView delete(@RequestParam int idDeletar) {
+		ModelAndView modelAndView = new ModelAndView("repos");
+		try {
+			Github git = githubRepository.findBySearchTerm(idDeletar);
+			if (git!=null) {
+				githubService.deleteRepo(git.getId());
+				modelAndView.addObject("githubService", githubService);
+				modelAndView.setViewName("redirect:/listarbanco?retorno=10");
+			}
+		}
+		catch(Exception e) {
+			modelAndView.setViewName("redirect:/listarbanco?retorno=20");
+			throw e;
+		}
+		
+		return modelAndView;
+	}
+	
 
 	public static List<String> getValuesForGivenKey(String jsonArrayStr, String key) {
 		JSONArray jsonArray = new JSONArray(jsonArrayStr);

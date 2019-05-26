@@ -31,12 +31,25 @@
                 </div>
             </div>
         </nav>
+<div class="row" th:if="${!(retornoSave == null)}" id="retornoSave" >
+			<div class="col-sm-11"
+				style="border-style: solid; border-color: green;">
+				<h4 th:if="${!(retornoSave == null)}"  class="col-sm-11"
+					style="color: green;" th:text="${retornoSave}"></h4>
+				<img alt="" class="sv" th:if="${!(retornoSave == null)}"
+					id="retornoSaveX"
+					src="https://cdn2.iconfinder.com/data/icons/social-productivity-line-art-1/128/close-cancel-512.png"
+					height="15px" width="15px" />
+			</div>
 
+
+		</div>
         <div class="jumbotron">
             <div class="row text-center">
                 <div class="">
-                    <h2>Uso de API do Github</h2>
-                   
+                    <h1>Uso da API do Github</h1>
+                   	<h3 id="lapi" style="display: none;">Listagem de Repositórios da API</h3>
+                   	<h3 id="lbd" style="display: none;">Listagem de Repositórios do Banco de Dados</h3>
                 </div>
             </div>
             <div class="row text-center">

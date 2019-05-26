@@ -1,7 +1,10 @@
 package com.gitapi.github.services;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.gitapi.github.entities.Github;
 import com.gitapi.github.repositories.GithubRepository;
@@ -41,9 +44,25 @@ public class GithubServiceImpl implements GithubService {
 
 
 
+	@Override
+	public void deleteRepo(Integer id) {
+		githubRepository.delete(id);
+	}
 
 
 
-
+	@Override
+	public boolean listarBanco() {
+		ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
+		builder.scheme("https");
+		builder.replaceQueryParam("someBoolean", false);
+		URI url = builder.build().toUri();
+		System.out.println("URL ENCONTRADA");
+		System.out.println(url);
+		String u = "" + url;
+		if (u.startsWith("http://localhost:8080/listarbanco") || u.startsWith("https://localhost:8080/listarbanco") || u.startsWith("localhost:8080/listarbanco"))
+			return true;
+		return false;
+	}
 	
 }

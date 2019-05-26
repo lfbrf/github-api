@@ -10,6 +10,12 @@
 	<div class="container">
 		<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 
+
+
+		
+
+
+
 		<form class="form-horizontal" th:action="@{/search}" method="post">
 
 			<div class="form-group">
@@ -35,7 +41,8 @@
 				</div>
 				<div class="col-sm-1">
 					<input id="url" name="url" style="display: none;" /> <input
-						type="image" onclick=" enviarBusca(); return false;" height="35px" width="35px"
+						type="image" onclick=" enviarBusca(); return false;" height="35px"
+						width="35px"
 						src="https://www.sccpre.cat/mypng/full/44-449348_icons-transparent-magnifying-glass-magnifying-glass-icon-transparent.png" />
 				</div>
 				<button type="submit" id="btBuscarApi" class="btn btn-default"
@@ -88,17 +95,27 @@
 						<td th:text="${repo.defaultBranch}" style="word-wrap: break-word"></td>
 						<td th:text="${repo.language}" style="word-wrap: break-word"></td>
 						<td th:text="${repo.forks}" style="word-wrap: break-word"></td>
-						<td class="rp"><img alt="" class="sv" 
+						<td class="rp"><img alt="" class="sv"
 							src="https://cdn2.iconfinder.com/data/icons/arrows-part-1/32/tiny-arrows-vertical-in-1-512.png"
 							height="30px" width="30px" /></td>
-						
-						
-						<td  ><img alt="" class="sv" th:if="${githubService.checkPersistRepo(repo.id) == false}"
+
+
+
+						<td><img alt="" class="sv"
+							th:if="${githubService.checkPersistRepo(repo.id) == false}"
 							th:onclick="'javascript:sendSave(' + ${repo.id} + ');'"
 							src="https://cdn2.iconfinder.com/data/icons/apple-classic/100/Apple_classic_10Icon_5px_grid-04-512.png"
-							height="30px" width="30px" /></td>
+							height="30px" width="30px" />
+							
+							<img alt="" class="sv" 
+							th:if="${githubService.checkPersistRepo(repo.id) == true and githubService.listarBanco() == true}"
+							th:onclick="'javascript:sendDelete(' + ${repo.id} + ');'"
+							src="https://cdn2.iconfinder.com/data/icons/apple-inspire-white/100/Apple-64-512.png"
+							height="30px" width="30px" />
+							
+							</td>
 
- 
+
 
 
 					</tr>
@@ -144,25 +161,22 @@
 										<li><span style="font-weight: bold;">Tipo: </span> <span
 											th:text="${repo.type}"></span></li>
 
-										
+
 									</ul>
-									
+
 
 								</li>
-								<li>
-								
-								</li>
+								<li></li>
 
 							</ul>
-							
+
 						</td>
-						
+
 					</tr>
 					<tr class="showhide2">
-					<td colspan="8" style="word-wrap: break-word;">
-					<span style="font-weight: bold; "  >Descrição: </span> <span
-											th:text="${repo.description}"></span>
-					</td>
+						<td colspan="8" style="word-wrap: break-word;"><span
+							style="font-weight: bold;">Descrição: </span> <span
+							th:text="${repo.description}"></span></td>
 					</tr>
 
 				</div>
@@ -175,6 +189,12 @@
 	<form th:action="@{/save}" method="post" style="display: none;">
 		<input name="idSalvar" id="idSalvar"></input>
 		<button style="display: none;" type="submit" id="saveRepo"
+			class="btn btn-default">Enviar</button>
+	</form>
+	
+	<form th:action="@{/delete}" method="post" style="display: none;">
+		<input name="idDeletar" id="idDeletar"></input>
+		<button style="display: none;" type="submit" id="deleteRepo"
 			class="btn btn-default">Enviar</button>
 	</form>
 
@@ -191,7 +211,6 @@
 
 
 <style>
-
 tr.showhide, tr.showhide2 {
 	display: none
 }

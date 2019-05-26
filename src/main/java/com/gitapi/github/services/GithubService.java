@@ -8,4 +8,6 @@ public interface GithubService {
 	 Github saveGithub(Github github);
 	 Iterable<Github> listallRepos();
 	 boolean checkPersistRepo(int id);
+	 void deleteRepo(Integer id);
+	 boolean listarBanco();
 }
