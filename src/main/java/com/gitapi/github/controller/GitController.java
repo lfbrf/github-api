@@ -89,22 +89,7 @@ public class GitController {
 		}
 		modelAndView.addObject("githubService", githubService);
 		List<GithubApi> todos = new ArrayList<GithubApi>();
-		if (query!= null && query!="" && !query.equals("")) {
-			todos = listAllSaved(query, language);
-		}
-
-		else {
-			Iterable<Github> z = githubService.listallRepos();
-			if (z!=null) 
-				for(Github s: z){
-					String st = s.getIdGithub() + "";
-					List<GithubApi> m = setGithubRepos(st, "", true);
-					if (m!=null && !(m.isEmpty())) {
-						todos.add(m.get(0));
-					}
-						
-				}
-		}
+		todos = listAllSaved(query, language);
 		if (todos!=null && !(todos.isEmpty()))
 			modelAndView.addObject("repos", todos);
 		return modelAndView;
@@ -207,7 +192,7 @@ public class GitController {
 
 	public List<GithubApi> listAllSaved(String query, String language) {
 		List<GithubApi> gitsRposAux = new ArrayList<GithubApi>();
-		if (query.equals("") || query == "") {
+		if (query == null || query.equals("") || query == "") {
 			Iterable<Github> z = githubService.listallRepos();
 
 			for(Github g: z){
