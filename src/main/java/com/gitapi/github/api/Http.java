@@ -15,8 +15,6 @@ public class Http {
 		String url = "";
 		if (listaBanco) {
 			url = "https://api.github.com/repositories/" + busca;
-			System.out.println("Minha Url");
-			System.out.println(url);
 		}
 		else {
 			url = "https://api.github.com/search/repositories?q=" + busca;
@@ -27,7 +25,6 @@ public class Http {
 			url = url + "&sort=stars&order=desc";
 		}
 
-		System.out.println(url);
 		HttpURLConnection httpcon = (HttpURLConnection) new URL(url).openConnection();
 
 		httpcon.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
@@ -46,8 +43,6 @@ public class Http {
 
 			builder.append(retornoJson);
 		}
-
-
 
 		bufferedReader.close();
 		String x = builder.toString();

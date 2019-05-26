@@ -57,8 +57,6 @@ public class GithubServiceImpl implements GithubService {
 		builder.scheme("https");
 		builder.replaceQueryParam("someBoolean", false);
 		URI url = builder.build().toUri();
-		System.out.println("URL ENCONTRADA");
-		System.out.println(url);
 		String u = "" + url;
 		if (u.startsWith("http://localhost:8080/listarbanco") || u.startsWith("https://localhost:8080/listarbanco") || u.startsWith("localhost:8080/listarbanco"))
 			return true;

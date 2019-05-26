@@ -1,7 +1,6 @@
 package com.gitapi.github.controller;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,16 +9,12 @@ import java.util.stream.IntStream;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.gitapi.github.api.Http;
 import com.gitapi.github.entities.Github;
@@ -104,9 +99,7 @@ public class GitController {
 				for(Github s: z){
 					String st = s.getIdGithub() + "";
 					List<GithubApi> m = setGithubRepos(st, "", true);
-					System.out.println("UP UP");
 					if (m!=null && !(m.isEmpty())) {
-						System.out.println("AQUI S");
 						todos.add(m.get(0));
 					}
 						
@@ -228,7 +221,6 @@ public class GitController {
 		else {
 			Iterable<Github> z = githubService.listallRepos();
 			List<GithubApi> gits = setGithubRepos(query, language, false);
-			System.out.println("IF ELSE CORRETO");
 			for(Github g: z){
 				for (int i =0; i<gits.size(); i++) {
 					if (g.getIdGithub() == gits.get(i).getId())	{
@@ -243,24 +235,17 @@ public class GitController {
 	}
 	@RequestMapping("/search")
 	public ModelAndView search(Model model,  @RequestParam String query, @RequestParam String language, String url) {
-		System.out.println(url);
 		ModelAndView modelAndView = new ModelAndView("repos");
 		modelAndView.addObject("query", query);
 		modelAndView.addObject("githubService", githubService);
 		modelAndView.addObject("language", language);
-		System.out.println("Minha URL!!!!!");
-		System.out.println(url);
 		if (url.startsWith("http://localhost:8080/listarbanco")||
 				url.startsWith("https://localhost:8080/listarbanco")||
 				url.startsWith("localhost:8080/listarbanco")) {
-			//githubService.searchById(query);
-			System.out.println("ATE AQI");
 			modelAndView.setViewName("redirect:listarbanco");
-
 			try
 			{
 				List<GithubApi> gitsAllrepos = new ArrayList<GithubApi>();
-
 			}
 
 			catch (NumberFormatException nfe)
@@ -334,13 +319,6 @@ public class GitController {
 		return modelAndView;
 	}
 	
-
-	public static List<String> getValuesForGivenKey(String jsonArrayStr, String key) {
-		JSONArray jsonArray = new JSONArray(jsonArrayStr);
-		return IntStream.range(0, jsonArray.length())
-				.mapToObj(index -> ((JSONObject)jsonArray.get(index)).optString(key))
-				.collect(Collectors.toList());
-	}
 
 
 	private static JSONObject chamadaHttp(String busca, String linguagem, boolean ordem) throws IOException {
