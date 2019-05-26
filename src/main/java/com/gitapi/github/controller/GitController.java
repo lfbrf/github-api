@@ -79,7 +79,7 @@ public class GitController {
 			String message = "";
 			if (retorno.equals("1") || retorno == "1")
 				message = "Repositório salvo com sucesso!";
-			else if (retorno.equals("-1") || retorno == "-1")
+			else if (retorno.equals("-1") || retorno == "-1"  || retorno.equals("2") || retorno == "2" )
 				message = "Não foi possível salvar o repositório, favor entrar em contato com o administrador";
 			else if (retorno.equals("0") || retorno == "0")
 				message = "Não foi possível salvar o repositório, ja existe um registro salvo para o mesmo!";
@@ -92,10 +92,8 @@ public class GitController {
 			modelAndView.addObject("retornoSave", message);
 			//modelAndView.setViewName("redirect:listarbanco");
 		}
-		//List<GithubApi> gitsAllrepos = new ArrayList<GithubApi>();
 		modelAndView.addObject("githubService", githubService);
 		List<GithubApi> todos = new ArrayList<GithubApi>();
-		System.out.println("listArBanco listArBanco listArBanco");
 		if (query!= null && query!="" && !query.equals("")) {
 			todos = listAllSaved(query, language);
 		}
@@ -288,6 +286,16 @@ public class GitController {
 		github.setIdGithub(idSalvar);
 		String message = "";
 		ModelAndView modelAndView = new ModelAndView("repos");
+		String aux = idSalvar  + "";
+		List<GithubApi> gits = setGithubRepos(aux, "", true);
+		
+		if (gits == null || gits.isEmpty()) {
+			
+			modelAndView.setViewName("redirect:/listarbanco?retorno=2" );
+			
+			return modelAndView;
+		}
+			
 		modelAndView.addObject("githubService", githubService);
 		if (githubService.checkPersistRepo(idSalvar)) {
 			modelAndView.setViewName("redirect:/listarbanco?retorno=0");
@@ -314,6 +322,9 @@ public class GitController {
 				modelAndView.addObject("githubService", githubService);
 				modelAndView.setViewName("redirect:/listarbanco?retorno=10");
 			}
+			else
+				modelAndView.setViewName("redirect:/listarbanco?retorno=20");
+			
 		}
 		catch(Exception e) {
 			modelAndView.setViewName("redirect:/listarbanco?retorno=20");
