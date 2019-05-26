@@ -239,9 +239,9 @@ public class GitController {
 		modelAndView.addObject("query", query);
 		modelAndView.addObject("githubService", githubService);
 		modelAndView.addObject("language", language);
-		if (url.startsWith("http://localhost:8080/listarbanco")||
-				url.startsWith("https://localhost:8080/listarbanco")||
-				url.startsWith("localhost:8080/listarbanco")) {
+		if (url.startsWith("http://githubapijava.herokuapp.com/listarbanco")||
+				url.startsWith("https://githubapijava.herokuapp.com/listarbanco")||
+				url.startsWith("githubapijava.herokuapp.com/listarbanco")) {
 			modelAndView.setViewName("redirect:listarbanco");
 			try
 			{

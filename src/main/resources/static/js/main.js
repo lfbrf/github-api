@@ -42,9 +42,9 @@ $(function() {
 	$("#retornoSaveX").click(function(){
 		esconder("retornoSave");
 	});
-	if (window.location.href.startsWith("http://localhost:8080/listarbanco") ||
-			window.location.href.startsWith("https://localhost:8080/listarbanco")||
-			window.location.href.startsWith("localhost:8080/listarbanco")){
+	if (window.location.href.startsWith("http://githubapijava.herokuapp.com/listarbanco") ||
+			window.location.href.startsWith("https://githubapijava.herokuapp.com/listarbanco")||
+			window.location.href.startsWith("githubapijava.herokuapp.com/listarbanco")){
 		$("#listarBancoAtivo").show();
 		$("#listarBanco").hide();
 		$("#listarApi").show();

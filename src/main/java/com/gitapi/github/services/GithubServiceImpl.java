@@ -58,7 +58,7 @@ public class GithubServiceImpl implements GithubService {
 		builder.replaceQueryParam("someBoolean", false);
 		URI url = builder.build().toUri();
 		String u = "" + url;
-		if (u.startsWith("http://localhost:8080/listarbanco") || u.startsWith("https://localhost:8080/listarbanco") || u.startsWith("localhost:8080/listarbanco"))
+		if (u.startsWith("http://githubapijava.herokuapp.com/listarbanco") || u.startsWith("https://githubapijava.herokuapp.com/listarbanco") || u.startsWith("githubapijava.herokuapp.com/listarbanco"))
 			return true;
 		return false;
 	}
