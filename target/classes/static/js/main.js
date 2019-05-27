@@ -9,7 +9,7 @@ function enviarBusca(){
 	else{
 		$("#query").val($("#query").val().replace(/\s/g, ""));
 		$("#url").val(url);
-		$("#currentPage").val(1);
+		$("#currentPage").val(0);
 		$('#btBuscarApi').trigger('click'); 
 	}
 		
@@ -32,8 +32,8 @@ function avancar(){
 function voltar(){
 	$("#query").val($("#query").val().replace(/\s/g, ""));
 	$("#url").val(url);
-	var pg = $("#cp").val() - 1;
-	$("#currentPage").val($("#cp").val());
+	var pg = $("#cp").val() - 2;
+	$("#currentPage").val(pg);
 	$('#btBuscarApi').trigger('click'); 
 }
 
@@ -56,6 +56,9 @@ function sendDelete(id) {
 }
 $(function() {
 	$("#valPg").text($("#cp").val());
+	if ($("#valPg").text() <=1 ){
+		$("#voltarBt").hide();
+	}
 	$("#retornoSaveX").click(function(){
 		esconder("retornoSave");
 	});

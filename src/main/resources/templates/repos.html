@@ -18,6 +18,7 @@
 
 		<form class="form-horizontal" th:action="@{/search}" method="post">
 			<input name="currentPage" style="display:none;" id="currentPage"></input>
+			
 			<div class="form-group">
 				<div class="form-group">
 					<div class="col-sm-1">
@@ -184,12 +185,12 @@
 	
 		</div>
 
-  <input id="cp" value="2" style="display: none;"  th:value="${valorPagina}"  />
-<div class="pagination" style="float:right;" th:if="${githubService != null and githubService.listarBanco() == false and valorPagina != -1}"> 
-  <a href="#" onclick="voltar();">«</a> 
+  <input id="cp" value="1" style="display: none;"  th:value="${valorPagina}"  />
+<div class="pagination" style="float:right;" th:if="${githubService != null and githubService.listarBanco() == false}"> 
+  <a href="#" id="voltarBt" onclick="voltar();">«</a> 
   <a href="#" id="valPg" ></a> 
 
-  <a href="#" onclick="avancar();" th:if="${valorPagina != -1}">»</a> 
+  <a href="#" onclick="avancar();" th:if="${add}">»</a> 
 
 </div>
 </div>

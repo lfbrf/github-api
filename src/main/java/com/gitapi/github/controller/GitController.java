@@ -243,6 +243,7 @@ public class GitController {
 		modelAndView.addObject("query", query);
 		modelAndView.addObject("githubService", githubService);
 		modelAndView.addObject("language", language);
+		
 		if (url.startsWith("http://localhost:8080/listarbanco")||
 				url.startsWith("https://localhost:8080/listarbanco")||
 				url.startsWith("localhost:8080/listarbanco")) {
@@ -259,12 +260,16 @@ public class GitController {
 
 		}  
 		else {
-			
+			currentPage ++;
+			System.out.println("BUSCANDO PELA PAGINA" + currentPage);
 			modelAndView.addObject("repos", setGithubRepos(query, language, false, currentPage));
-			if (adicionarPagina(query, language, currentPage))
-				currentPage ++;
+			
+			if (adicionarPagina(query, language, currentPage)) {
+				modelAndView.addObject("add", true);
+			}
+				
 			else
-				currentPage = -1;
+				modelAndView.addObject("add", false);
 			modelAndView.addObject("valorPagina", currentPage);
 		}
 		
