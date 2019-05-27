@@ -17,7 +17,7 @@
 
 
 		<form class="form-horizontal" th:action="@{/search}" method="post">
-
+			<input name="currentPage" style="display:none;" id="currentPage"></input>
 			<div class="form-group">
 				<div class="form-group">
 					<div class="col-sm-1">
@@ -181,13 +181,21 @@
 
 				</div>
 			</table>
-
+	
 		</div>
 
+  <input id="cp" value="2" style="display: none;"  th:value="${valorPagina}"  />
+<div class="pagination" style="float:right;" th:if="${githubService != null and githubService.listarBanco() == false and valorPagina != -1}"> 
+  <a href="#" onclick="voltar();">«</a> 
+  <a href="#" id="valPg" ></a> 
 
-	</div>
+  <a href="#" onclick="avancar();" th:if="${valorPagina != -1}">»</a> 
+
+</div>
+</div>
 	<form th:action="@{/save}" method="post" style="display: none;">
 		<input name="idSalvar" id="idSalvar"></input>
+		<input name="currentPageSave" style="display:none;" id="currentPageSave"></input>
 		<button style="display: none;" type="submit" id="saveRepo"
 			class="btn btn-default">Enviar</button>
 	</form>
@@ -222,5 +230,44 @@ tr.showhide, tr.showhide2 {
 .sv {
 	cursor: pointer;
 }
+
+
+
+.pagination { 
+    display: inline-block; 
+} 
+  
+.pagination a { 
+    font-weight:bold; 
+    font-size:20px; 
+    color: black; 
+    float: left; 
+    padding: 8px 16px; 
+    text-decoration: none; 
+} 
+.pagination a.active { 
+    border-radius:5px;     
+    background-color:#009900; 
+} 
+.pagination a:hover:not(.active) { 
+    background-color: #d4d5d2; 
+    border-radius:5px; 
+} 
+.GFG { 
+    font-size:42px; 
+    font-weight:bold; 
+    color:#009900; 
+    margin-left:100px; 
+    margin-bottom:60px; 
+} 
+.peg { 
+    font-size:24px; 
+    font-weight:bold; 
+    margin-left:40px; 
+    margin-bottom:20px; 
+} 
+
+
+
 </style>
 </html>

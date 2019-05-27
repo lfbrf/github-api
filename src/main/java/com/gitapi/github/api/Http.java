@@ -18,7 +18,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 
 public class Http {
 
-	public String chamaUrl(String busca, String language, boolean ordem, boolean listaBanco ) throws IOException {
+	public String chamaUrl(String busca, String language, boolean ordem, boolean listaBanco, int currentPage ) throws IOException {
 		String url = "";
 		if (listaBanco) {
 			url = "https://api.github.com/repositories/" + busca;
@@ -30,11 +30,13 @@ public class Http {
 			}
 
 			url = url + "&sort=stars&order=desc";
+			url = url + "&page=" + currentPage;
 		}
 
-		
 
-		String token = "b88b5b70096a0111461f277e972cc1909989fd2f";
+
+		String token = "ef3ad275d92c6e2a4187027b78ef4e1de5103e60";
+		url = url + "&access_token=ef3ad275d92c6e2a4187027b78ef4e1de5103e60";
  
 		//String urvl = "raw.githubusercontent.com/Crunchify/All-in-One-Webmaster/master/readme.txt";
  

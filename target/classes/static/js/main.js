@@ -9,10 +9,11 @@ function enviarBusca(){
 	else{
 		$("#query").val($("#query").val().replace(/\s/g, ""));
 		$("#url").val(url);
+		$("#currentPage").val(1);
 		$('#btBuscarApi').trigger('click'); 
 	}
 		
-	
+	 
 }
 
 function esconder(id){
@@ -21,8 +22,23 @@ function esconder(id){
      });
 }
 
-function sendSave(id) {
+function avancar(){
+	$("#query").val($("#query").val().replace(/\s/g, ""));
+	$("#url").val(url);
+	$("#currentPage").val($("#cp").val());
+	$('#btBuscarApi').trigger('click'); 
+}
 
+function voltar(){
+	$("#query").val($("#query").val().replace(/\s/g, ""));
+	$("#url").val(url);
+	var pg = $("#cp").val() - 1;
+	$("#currentPage").val($("#cp").val());
+	$('#btBuscarApi').trigger('click'); 
+}
+
+function sendSave(id) {
+	$("#currentPageSave").val($("#cp").val());
 	$("#idSalvar").val(id);
 	$('#saveRepo').trigger('click');
 }
@@ -39,6 +55,7 @@ function sendDelete(id) {
 	}
 }
 $(function() {
+	$("#valPg").text($("#cp").val());
 	$("#retornoSaveX").click(function(){
 		esconder("retornoSave");
 	});

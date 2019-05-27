@@ -89,7 +89,7 @@ public class GitController {
 		}
 		modelAndView.addObject("githubService", githubService);
 		List<GithubApi> todos = new ArrayList<GithubApi>();
-		todos = listAllSaved(query, language);
+		todos = listAllSaved(query, language, 1);
 		if (todos!=null && !(todos.isEmpty()))
 			modelAndView.addObject("repos", todos);
 		return modelAndView;
@@ -99,21 +99,21 @@ public class GitController {
 
 
 
-	public List<GithubApi> setGithubRepos(String query, String language, boolean listaBanco) {
+	public List<GithubApi> setGithubRepos(String query, String language, boolean listaBanco, int currentPage) {
 		List<GithubApi> github = new ArrayList<GithubApi>();	
 		JSONObject object = null;
 		try {
 
-			object = chamadaHttp(query,  language, true);
+			object = chamadaHttp(query,  language, true, currentPage);
 			JSONArray jArray;
 			if (!listaBanco) {
-				object = chamadaHttp(query,  language, true);
+				object = chamadaHttp(query,  language, true, currentPage);
 				jArray = object.getJSONArray("items");
 			}
 
 			else {
 
-				jArray = chamadaHttpBanco(query, language, true);
+				jArray = chamadaHttpBanco(query, language, true, currentPage);
 
 			}	
 
@@ -190,7 +190,7 @@ public class GitController {
 		return github;
 	}
 
-	public List<GithubApi> listAllSaved(String query, String language) {
+	public List<GithubApi> listAllSaved(String query, String language, int currentPage) {
 		List<GithubApi> gitsRposAux = new ArrayList<GithubApi>();
 		if (query == null || query.equals("") || query == "") {
 			Iterable<Github> z = githubService.listallRepos();
@@ -198,28 +198,47 @@ public class GitController {
 			for(Github g: z){
 				int idSalvo = g.getIdGithub();
 				String aux = idSalvo + "";
-				List<GithubApi> gits = setGithubRepos(aux, language, true);
+				List<GithubApi> gits = setGithubRepos(aux, language, true, currentPage);
 				if (!gits.isEmpty() && idSalvo == gits.get(0).getId())
 					gitsRposAux.add(gits.get(0));
 			}
 		}
 		else {
+			/* Comentado forma antiga, consulta fica muito lenta para buscas mais genericas. 
 			Iterable<Github> z = githubService.listallRepos();
-			List<GithubApi> gits = setGithubRepos(query, language, false);
+			
 			for(Github g: z){
-				for (int i =0; i<gits.size(); i++) {
-					if (g.getIdGithub() == gits.get(i).getId())	{
-						gitsRposAux.add(gits.get(i));
+				while(adicionarPagina(query, language, currentPage)) {
+					List<GithubApi> gits = setGithubRepos(query, language, false, currentPage);
+					for (int i =0; i<gits.size(); i++) {
+						if (g.getIdGithub() == gits.get(i).getId())	{
+							gitsRposAux.add(gits.get(i));
 
+						}
 					}
-
+					currentPage ++ ;
 				}
+				
+			}*/
+			System.out.println("QUERY ANTES DO ERRO");
+			System.out.println(query);
+			List <Github> git = null;
+			if (language == null || language.equals("") ||  language == "" || language.equals("Todas") || language == "Todas")
+				git = githubRepository.findBySearchReposName(query);
+			else
+				git = githubRepository.findBySearchReposNameLanguage(query, language);
+			
+			
+			for (int i = 0; i< git.size(); i++) {
+				List<GithubApi> gits = setGithubRepos(git.get(i).getIdGithub() + "", language, true, currentPage);
+				gitsRposAux.add(gits.get(0));
 			}
+			
 		}
 		return gitsRposAux;
 	}
 	@RequestMapping("/search")
-	public ModelAndView search(Model model,  @RequestParam String query, @RequestParam String language, String url) {
+	public ModelAndView search(Model model,  @RequestParam String query, @RequestParam String language, String url, @RequestParam int currentPage) {
 		ModelAndView modelAndView = new ModelAndView("repos");
 		modelAndView.addObject("query", query);
 		modelAndView.addObject("githubService", githubService);
@@ -240,24 +259,39 @@ public class GitController {
 
 		}  
 		else {
-			modelAndView.addObject("repos", setGithubRepos(query, language, false));
+			
+			modelAndView.addObject("repos", setGithubRepos(query, language, false, currentPage));
+			if (adicionarPagina(query, language, currentPage))
+				currentPage ++;
+			else
+				currentPage = -1;
+			modelAndView.addObject("valorPagina", currentPage);
 		}
-
-
+		
+		//modelAndView.setViewName("/search?retorno=");
 		return modelAndView;
 	} 
 
+	
+	public boolean adicionarPagina(String query, String language, int currentPage) {
+		
+		List<GithubApi> s = setGithubRepos(query, language, false, currentPage + 1);
+		if (!(s.isEmpty()))
+			return true;
+		return false;
+		
+	}
 
 
 
 	@RequestMapping("/save")
-	public ModelAndView save(@RequestParam int idSalvar) {
+	public ModelAndView save(@RequestParam int idSalvar, @RequestParam int currentPageSave) {
 		Github github = new Github(); 
 		github.setIdGithub(idSalvar);
 		String message = "";
 		ModelAndView modelAndView = new ModelAndView("repos");
 		String aux = idSalvar  + "";
-		List<GithubApi> gits = setGithubRepos(aux, "", true);
+		List<GithubApi> gits = setGithubRepos(aux, "", true, currentPageSave);
 		
 		if (gits == null || gits.isEmpty()) {
 			
@@ -271,6 +305,8 @@ public class GitController {
 			modelAndView.setViewName("redirect:/listarbanco?retorno=0");
 			return modelAndView;
 		}
+		github.setRepoName(gits.get(0).getFullName());
+		github.setLanguage(gits.get(0).getLanguage());
 		Github p = githubService.saveGithub(github);
 		if (p!=null)
 			message = "1";
@@ -306,16 +342,18 @@ public class GitController {
 	
 
 
-	private static JSONObject chamadaHttp(String busca, String linguagem, boolean ordem) throws IOException {
+	private static JSONObject chamadaHttp(String busca, String linguagem, boolean ordem, int currentPage) throws IOException {
 		Http http = new Http();
-		String retornoJson = (http.chamaUrl(busca, linguagem, ordem, false) + " ]}");
+
+		String retornoJson = (http.chamaUrl(busca, linguagem, ordem, false, currentPage) + " ]}");
 		JSONObject objetoJson = new JSONObject(retornoJson);  
+		objetoJson.isEmpty();
 		return objetoJson;
 	}
 
-	private static JSONArray chamadaHttpBanco(String busca, String linguagem, boolean ordem) throws IOException {
+	private static JSONArray chamadaHttpBanco(String busca, String linguagem, boolean ordem, int currentPage) throws IOException {
 		Http http = new Http();
-		String retornoJson =  "[" + (http.chamaUrl(busca, linguagem, ordem, true) + " ]}");
+		String retornoJson =  "[" + (http.chamaUrl(busca, linguagem, ordem, true, currentPage) + " ]}");
 		JSONArray itemArray=new JSONArray(retornoJson);  
 		return itemArray;
 	}

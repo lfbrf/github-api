@@ -25,6 +25,26 @@ public class Github {
 	@Column(unique=true, nullable=false) 
 	private int idGithub;
 
+	private String repoName;
+	
+	private String language;
+	
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getRepoName() {
+		return repoName;
+	}
+
+	public void setRepoName(String repoName) {
+		this.repoName = repoName;
+	}
+
 	public int getIdGithub() {
 		return idGithub;
 	}
