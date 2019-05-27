@@ -12,11 +12,11 @@ Java, Spring, HTML, CSS, Hibernate, Maven
 
 ### Observação
 Para rodar o projeto localmente
--Clonar repositório
--Instalar as dependêcnias do projeto com o comando:
+#### Clonar repositório
+#### Instalar as dependêcnias do projeto com o comando:
 mvn clean install na pasta do projeto
--Adicionar um novo token 
+#### Adicionar um novo token 
 Na classe htttp onde o mesmo é usado (variável token e url).
-No github é possvel gerar em:
+#### No github é possvel gerar em:
 Settings -> Developer Settings -> Personal Access Tokens
 
